@@ -13,44 +13,44 @@ enable_a20:
   pusha
   cli
 
-  call _enable_a20_wait_in
+  call .wait_in
   mov al, 0xad
   out 0x64, al
 
-  call _enable_a20_wait_in
+  call .wait_in
   mov al, 0xd0
   out 0x64, al
 
-  call _enable_a20_wait_out
+  call .wait_out
   in al, 0x60
   push ax
 
-  call _enable_a20_wait_in
+  call .wait_in
   mov al, 0xd1
   out 0x64, al
 
-  call _enable_a20_wait_in
+  call .wait_in
   pop ax
   or al, 2
   out 0x60, al
 
-  call _enable_a20_wait_in
+  call .wait_in
   mov al, 0xae
   out 0x64, al
 
-  call _enable_a20_wait_in
+  call .wait_in
   sti
   popa
   ret
 
-_enable_a20_wait_in:
+.wait_in:
   in al, 0x64
   test al, 2
-  jnz _enable_a20_wait_in
+  jnz .wait_in
   ret
 
-_enable_a20_wait_out:
+.wait_out:
   in al, 0x64
   test al, 1
-  jz _enable_a20_wait_out
+  jz .wait_out
   ret

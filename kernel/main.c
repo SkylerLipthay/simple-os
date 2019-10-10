@@ -14,7 +14,7 @@ void kmain() {
 }
 
 void placech(unsigned char c, int x, int y, int attr) {
-	*(VGA_TEXT_BUFFER + (y * 80 + x)) = (attr << 8) | c;
+  *(VGA_TEXT_BUFFER + (y * 80 + x)) = (attr << 8) | c;
 }
 
 int x = 0;

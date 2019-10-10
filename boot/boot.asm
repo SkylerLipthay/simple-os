@@ -12,20 +12,20 @@ start:
   ; enough).
   mov sp, 0x700
   call bios_clear_screen
-  mov si, bootloader_entered_message
+  mov si, .bootloader_entered_message
   call bios_print
   call enable_a20
-  mov si, a20_enabled_message
+  mov si, .a20_enabled_message
   call bios_print
   ; BIOS fills `dl` with disk number, which remains untouched here.
   call read_kernel
-  mov si, kernel_read_message
+  mov si, .kernel_read_message
   call bios_print
   jmp switch_to_protected
 
-bootloader_entered_message: db "[", 0x01, "] Bootloader entered", 0x0d, 0x0a, 0
-a20_enabled_message: db "[", 0x01, "] A20 enabled", 0x0d, 0x0a, 0
-kernel_read_message: db "[", 0x01, "] Kernel read from disk", 0x0d, 0x0a, 0
+.bootloader_entered_message: db "[", 0x01, "] Bootloader entered", 0x0d, 0x0a, 0
+.a20_enabled_message: db "[", 0x01, "] A20 enabled", 0x0d, 0x0a, 0
+.kernel_read_message: db "[", 0x01, "] Kernel read from disk", 0x0d, 0x0a, 0
 
 %include "bios_clear_screen.asm"
 %include "bios_print.asm"
@@ -47,11 +47,11 @@ switch_to_protected:
   ; usually don't have to worry about this sort of thing, but when switching
   ; modes we have to hint to the CPU not to run other pipelined instructions in
   ; the wrong mode.
-  jmp gdt_code_seg:_switch_to_protected_init
+  jmp gdt_code_seg:.protected
 
 bits 32
 
-_switch_to_protected_init:
+.protected:
   mov ax, gdt_data_seg
   mov ds, ax
   mov es, ax
@@ -60,9 +60,6 @@ _switch_to_protected_init:
   mov ss, ax
   mov ebp, kernel_stack_pointer
   mov esp, ebp
-  jmp protected_environment
-
-protected_environment:
   jmp kernel_start_address
 
 kernel_start_address: equ 0x7e00
